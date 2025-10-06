@@ -1,0 +1,23 @@
+{
+  "name": "backend-banco-de-dados",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "API",
+    "Senai",
+    "Node"
+  ],
+  "author": "Jhonatan Henrique Favoreto",
+  "license": "MIT",
+  "description": "Aula sobre backend com banco de dados - Senai 2025",
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
