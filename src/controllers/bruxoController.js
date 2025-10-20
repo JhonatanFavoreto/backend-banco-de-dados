@@ -11,13 +11,14 @@ export const listarTodos = async (req, res) => {
       res.status(404).json({
         total: bruxos.length,
         mensagem: "Nenhum bruxo encontrado",
+        bruxos
       });
     }
 
     res.status(200).json({
       total: bruxos.length,
       mensagem: "Lista de bruxos",
-      bruxos,
+      bruxos
     });
   } catch (error) {
     res.status(500).json({
