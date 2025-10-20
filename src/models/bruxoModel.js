@@ -1,15 +1,15 @@
-// É no model que fazemos a conexão com o banco de dados
-// Ex: SELECT * FROM bruxos; porém estamos usando o PRISMA
-// Que abstrai o comando SQL
+//é no model que fazemos a consulta para o banco de dados
+//ex: SELECT * FROM bruxos; porém estamos usando o PRISMA
+// que abstrai o comando SQL
 
-// Importar o prisma Client
+//importar o prisma client
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-// Cria a váriavel findAll e já exporto
+// Crio a variavel findAll e já exporto
 export const findAll = async () => {
-  // SELECT * FROM bruxos = findMany();
-  return await prisma.buxo.findMany({
-    orderBy: { nome: 'asc' }, // Ordena por nome em ordem crescente
+  // SELECT * FROM bruxos = findMany
+  return await prisma.bruxo.findMany({
+    orderBy: { nome: "asc" },
   });
 };

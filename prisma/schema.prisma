@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Buxo {
+model Bruxo {
   id           Int      @id @default(autoincrement())
   nome         String
   casa         String

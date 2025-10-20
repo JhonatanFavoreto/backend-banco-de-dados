@@ -1,28 +1,26 @@
-// Lógica, tratativa de erros e regras de negócio
+// Lógica, tratativa de erros e regras de negocio
 
-// Importar o Model
+//importar o Model
 import * as BruxoModel from "./../models/bruxoModel.js";
 
 export const listarTodos = async (req, res) => {
   try {
     const bruxos = await BruxoModel.findAll();
-
-    if (!bruxos || bruxos.length === 0) {
+    if (bruxos || bruxos.length === 0) {
       res.status(404).json({
         total: bruxos.length,
-        mensagem: "Nenhum bruxo encontrado",
-        bruxos
+        mensagem: "Não há bruxos na lista",
+        bruxos,
       });
     }
-
     res.status(200).json({
       total: bruxos.length,
       mensagem: "Lista de bruxos",
-      bruxos
+      bruxos,
     });
   } catch (error) {
     res.status(500).json({
-      erro: "Erro interno no servidor",
+      erro: "Erro interno de servidor",
       detalhes: error.message,
       status: 500,
     });
