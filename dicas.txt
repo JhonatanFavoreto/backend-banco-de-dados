@@ -1,17 +1,49 @@
-Vamos utilizar o PRISMA.
+==== GUIA COMPLETO DO PRISMA ====
+
+📦 PASSO 1: Instalação
 -> npm install prisma @prisma/client
 
-Depois de instalar, vamos executar o prisma
--> npx prisma init
--> npx prisma init --datasource-provider postgreql
-npx mesmo! não é npm
+🚀 PASSO 2: Inicializar Prisma (apenas na primeira vez!)
+-> npx prisma init --datasource-provider postgresql
+   (Isso cria a pasta /prisma e o arquivo .env)
 
-Proxima etapa é configurar a conexão com postgreql no arquivo .env
+⚙️ PASSO 3: Configurar conexão no arquivo .env
+DATABASE_URL="postgresql://USUARIO:SENHA@HOST:PORTA/NOME_BANCO"
+Exemplo:
 DATABASE_URL="postgresql://postgres:amods@localhost:7777/hogwarts_db"
 
-Depois de criar o model, precisamos criar a migrate/versao do banco de dados
-npx prisma migrate dev --name init
+📝 PASSO 4: Criar Models no arquivo prisma/schema.prisma
+Exemplo:
+model Bruxo {
+  id    Int     @id @default(autoincrement())
+  nome  String
+  casa  String
+  @@map("bruxos")
+}
 
-npx prisma studio
+🗄️ PASSO 5: Criar Migration (versão do banco de dados)
+-> npx prisma migrate dev --name descricao_da_mudanca 
+-> npx prisma migrate dev --name init (Mais aceito)
+   Exemplos de nomes: init, adicionar_campo_email, criar_tabela_varinhas
+   (Este comando já roda o "prisma generate" automaticamente!)
 
-npx prisma generate
+👀 PASSO 6: Visualizar dados no navegador
+-> npx prisma studio
+
+🔄 COMANDOS EXTRAS:
+
+- Gerar Prisma Client (só se necessário, migrate dev já faz isso):
+  -> npx prisma generate
+
+- Ver status das migrations:
+  -> npx prisma migrate status
+
+- Resetar banco de dados (CUIDADO! Apaga todos os dados):
+  -> npx prisma migrate reset
+
+- Aplicar migrations em produção:
+  -> npx prisma migrate deploy
+
+⚠️ IMPORTANTE: Use npx, não npm! O npx executa comandos de pacotes instalados.
+
+📚 Documentação oficial: https://www.prisma.io/docs
