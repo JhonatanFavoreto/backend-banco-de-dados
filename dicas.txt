@@ -7,10 +7,12 @@
 -> npx prisma init --datasource-provider postgresql
    (Isso cria a pasta /prisma e o arquivo .env)
 
-⚙️ PASSO 3: Configurar conexão no arquivo .env
+⚙️ PASSO 3: Configurar conexão no arquivo .env (Usado depois do git clone)
 DATABASE_URL="postgresql://USUARIO:SENHA@HOST:PORTA/NOME_BANCO"
 Exemplo:
-DATABASE_URL="postgresql://postgres:amods@localhost:7777/hogwarts_db"
+PORT = 3000
+
+DATABASE_URL="postgresql://postgres:amods@localhost:7777/hogwarts_db" 
 
 📝 PASSO 4: Criar Models no arquivo prisma/schema.prisma
 Exemplo:
@@ -23,7 +25,7 @@ model Bruxo {
 
 🗄️ PASSO 5: Criar Migration (versão do banco de dados)
 -> npx prisma migrate dev --name descricao_da_mudanca 
--> npx prisma migrate dev --name init (Mais aceito)
+-> npx prisma migrate dev --name init (Mais aceito - Usado depois do git clone)
    Exemplos de nomes: init, adicionar_campo_email, criar_tabela_varinhas
    (Este comando já roda o "prisma generate" automaticamente!)
 
