@@ -20,3 +20,16 @@ export const findById = async (id) => {
         where: { id: Number(id) }
     })
 }
+
+export const create = async (data) => {
+  return await prisma.bruxo.create({
+    data: {
+      nome: data.nome,
+      casa: data.casa,
+      patrono: data.patrono,
+      varinha: data.varinha,
+      anoMatricula: data.
+      anoMatricula,
+    }
+  })
+}
