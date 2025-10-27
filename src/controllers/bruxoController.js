@@ -1,95 +1,169 @@
 // Logica, tratativa de erros e regras de negocio
 
 // importar o Model
-import * as BruxoModel from "./../models/bruxoModel.js";
+import * as BruxoModel from './../models/bruxoModel.js'
 
 export const listarTodos = async (req, res) => {
-  try {
-    const bruxos = await BruxoModel.findAll();
+    try {
+        const bruxos = await BruxoModel.findAll();
 
-    if (!bruxos || bruxos.length === 0) {
-      res.status(404).json({
-        total: bruxos.length,
-        mensagem: "Não há bruxos na lista",
-        bruxos,
-      });
+        if (!bruxos || bruxos.length === 0) {
+            res.status(404).json({
+                total: bruxos.length,
+                mensagem: 'Não há bruxos na lista',
+                bruxos
+            })
+        }
+
+        res.status(200).json({
+            total: bruxos.length,
+            mensagem: 'Lista de bruxos',
+            bruxos
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            erro: 'Erro interno de servidor',
+            detalhes: error.message,
+            status: 500
+        })
     }
-
-    res.status(200).json({
-      total: bruxos.length,
-      mensagem: "Lista de bruxos",
-      bruxos,
-    });
-  } catch (error) {
-    res.status(500).json({
-      erro: "Erro interno de servidor",
-      detalhes: error.message,
-      status: 500,
-    });
-  }
-};
+}
 
 export const listarUm = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const bruxo = await BruxoModel.findById(id);
+    try {
+        const id = req.params.id;
+        const bruxo = await BruxoModel.findById(id);
 
-    if (!bruxo) {
-      return res.status(404).json({
-        erro: "Bruxo não encontrado!",
-        mensagem: "Verifique se o ID do bruxo existe",
-        id: id,
-      });
+        if (!bruxo) {
+            return res.status(404).json({
+                erro: 'Bruxo não encontrado!',
+                mensagem: 'Verifique se o id do bruxo existe',
+                id: id
+            })
+        }
+
+        res.status(200).json({
+            mensagem: 'Bruxo encontrado',
+            bruxo
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            erro: 'Erro ao buscar bruxo por id',
+            detalhes: error.message
+        })
     }
-
-    res.status(200).json({
-      mensagem: "Bruxo encontrado",
-      bruxo,
-    });
-  } catch (error) {
-    res.status(500).json({
-      erro: "Erro ao buscar bruxo por ID",
-      detalhes: error.message,
-    });
-  }
-};
+}
 
 export const criar = async (req, res) => {
-  try {
-    // De onde vem o dados para cá? Para e usar para criar
-    const camposObrigatorios = [ "nome", "casa", "patrono", "varinha", "anoMatricula" ];
-    const dadosBruxo = req.body;
+    try {
+        // De onde vem os dados para cá? Para eu usar para criar
+        const { nome, casa, patrono, varinha, anoMatricula } = req.body
 
-    const dado = req.body;
+        const dado = req.body
 
-    // Verificar se todos os campos obrigatórios estão presentes
-    const camposFaltando = camposObrigatorios.filter(campo => !dadosBruxo[campo]);
-    if (camposFaltando.length > 0) {
-      return res.status(400).json({
-        erro: "Campos obrigatórios faltando",
-        camposFaltando
-      });
+        // Validacao campos obrigatorios
+        const camposObrigatorios = ['nome', 'casa', 'varinha', 'anoMatricula'];
+
+        const faltando = camposObrigatorios.filter(campo => !dado[campo]);
+
+        if (faltando.length > 0) {
+            return res.status(400).json({
+                erro: `Os seguintes campos são obrigatórios: ${faltando.join(', ')}.`
+            });
+        }
+
+        // Verificar se a casa é valida
+        const casasValidas = ['Grifinória', 'Sonserina', 'Corvinal', 'Lufa-Lufa'];
+        if (!casasValidas.includes(casa)) {
+            return res.status(400).json({
+                erro: 'Casa inválida!',
+                casasValidas
+            })
+        }
+
+        const novoBruxo = await BruxoModel.create(dado);
+
+        res.status(201).json({
+            mensagem: 'Bruxo criado com sucesso!',
+            bruxo: novoBruxo
+        })
+
+
+    } catch (error) {
+        res.status(500).json({
+            erro: 'Erro ao criar bruxo',
+            detalhes: error.message
+        })
     }
+}
 
-    //Eu crio o bruxo, como?
+export const apagar = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
 
-    const novoBruxo = await BruxoModel.create(dado);
+        const bruxoExiste = await BruxoModel.findById(id);
 
-    res.status(201).json({
-      mensagem: "Bruxo criado com sucesso",
-      bruxo: novoBruxo
-    });
+        if (!bruxoExiste) {
+            return res.status(404).json({
+                erro: 'Bruxo não encontrado com esse id',
+                id: id
+            })
+        }
 
-    // Chamar o Model para criar o novo bruxo
-    const bruxoCriado = await BruxoModel.create(dadosBruxo);
-    res.status(201).json({
-      mensagem: "Bruxo criado com sucesso",
-      bruxo: bruxoCriado
-    });
-  } catch (error) {
-    res.status(500).json({
-      erro: "Erro ao criar novo bruxo",
-      detalhes: error.message,
-    });
-  }
+        await BruxoModel.deleteBruxo(id)
+
+        res.status(200).json({
+            mensagem: 'Bruxo removido com sucesso',
+            bruxoRemovido: bruxoExiste
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            erro: 'Erro ao apagar bruxo!',
+            detalhes: error.message
+        })
+    }
+}
+
+export const atualizar = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const dados = req.body;
+
+        const bruxoExiste = await BruxoModel.findById(id);
+
+        if (!bruxoExiste) {
+            return res.status(404).json({
+                erro: 'Bruxo não encontrado com esse id',
+                id: id
+            })
+        }
+
+        if (dados.casa) {
+            const casasValidas = ['Grifinória', 'Sonserina', 'Corvinal', 'Lufa-Lufa'];
+            if (!casasValidas.includes(dados.casa)) {
+                return res.status(400).json({
+                    erro: 'Casa inválida!',
+                    casasValidas
+                })
+            }
+        }
+        //Verificar se a casa que esta sendo editada, existe!
+
+
+        const bruxoAtualizado = await BruxoModel.update(id, dados);
+
+        res.status(200).json({
+            mensagem: 'Bruxo atualizado com sucesso',
+            bruxo: bruxoAtualizado
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            erro: 'Erro ao atualizar bruxos',
+            detalhes: error.message
+        })
+    }
 }
